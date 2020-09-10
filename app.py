@@ -15,18 +15,6 @@ st.markdown("Здесь что-то можно написать")
 st.sidebar.markdown("И здесь что-то можно написать")
 
 
-#url_all='https://bank.gov.ua/NBUStatService/v1/statdirectory/banksfinrep?start=20180101&period=m&json'
-#def get_dict():
-    #r = requests.get(url_all)
-    #source_all=r.json()
-    #mfo_list=list(set([(i['mfo']) for i in source_all]))
-    #fullname_list=list(set([(i['fullname']) for i in source_all]))
-    #name_pair = [(i['fullname'],i['mfo']) for i in source_all]
-    #name_pair = set(name_pair)
-    #return mfo_list,fullname_list,name_pair
-
-
-#mfo_list,fullname_list,name_pair= get_dict()
 name_pair=[('АБ "КЛІРИНГОВИЙ ДІМ"', '300647'),
  ('АБ "УКРГАЗБАНК"', '320478'),
  ('АКБ "ІНДУСТРІАЛБАНК"', '313849'),
