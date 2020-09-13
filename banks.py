@@ -31,4 +31,4 @@ while True:
 r = requests.get(url)
 source=r.json()
 name_pair = [(i['fullname'],i['mfo'],i['gr_bank']) for i in source]
-banks = set(name_pair)
+banks = list(set(name_pair))
