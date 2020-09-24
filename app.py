@@ -15,7 +15,7 @@ st.title("Показники фінансової діяльності банк�
 st.sidebar.title("Фільтр по банкам України")
 st.markdown("Дані фінансової звітності/згруповані балансові залишки банків України.")
 st.markdown("Дані доступні з 01.02.2018 та формуються за станом на 01 число кожного місяця, млн грн")
-st.sidebar.markdown("щось написати")
+st.sidebar.markdown("Агреговані показники")
 
 # обов'язково для даних,які будуть знову використовуватися в коді
 @st.cache
@@ -24,12 +24,19 @@ def get_bank_data():
     return name_pair
 name_pair=get_bank_data()
 
+name_list_A=[bank[0] for bank in banks if bank[2]=='A']
+name_list_B=[bank[0] for bank in banks if bank[2]=='B']
+name_list_E=[bank[0] for bank in banks if bank[2]=='E']
+
 # агреговані показники по всім банкам України
 all_banks = st.sidebar.checkbox("Всі банки України", True)
-
-
+agg_multi_select = [('Банки з державною часткою',name_list_A),
+('Банки іноземних банківських груп',name_list_B),
+('Банки з приватним капіталом',name_list_E)]
+agg_label = [i[0] for i in agg_multi_select]
+agg_choice = st.sidebar.multiselect('Оберіть групу банків для отримання агрегованого показника', (agg_label), key=1)
 # обираємо банки за категорією "Всі банки з державною часткою"
-name_list_A=[bank[0] for bank in banks if bank[2]=='A']
+
 st.sidebar.subheader("Банки з державною часткою")
 if st.sidebar.checkbox("Всі банки з державною часткою", False, key='0'):
     choice_A = name_list_A
@@ -38,7 +45,7 @@ else:
 
 
 st.sidebar.subheader("Банки іноземних банківських груп")
-name_list_B=[bank[0] for bank in banks if bank[2]=='B']
+
 if st.sidebar.checkbox("Всі банки іноземних банківських груп", False, key='0'):
     choice_B = name_list_B
 else:
@@ -46,7 +53,7 @@ else:
 
 
 st.sidebar.subheader("Банки з приватним капіталом")
-name_list_E=[bank[0] for bank in banks if bank[2]=='E']
+
 if st.sidebar.checkbox("Всі банки з приватним капіталом", False, key='0'):
     choice_E = name_list_E
 else:
@@ -74,6 +81,7 @@ def get_data(mfo,id_api):
     r = requests.get(url)
     source=r.json()
     return source
+
 def get_data_all(id_api):
     BASE_URL = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/banksfinrep?id_api={id_api}&start=20180101&period=m&json'
     url = BASE_URL.format(id_api=id_api)
@@ -103,7 +111,6 @@ else:
         st.plotly_chart(fig_1)
         st.write(df)
 
-#print('Оберіть банк чи групу банків')
 
 # для завантаження таблиці у вигляді csv файлу
 
