@@ -77,14 +77,17 @@ else:
     choice_E = st.sidebar.multiselect('Вибрати банк чи де-кілька банків', (name_list_E), key=1)
 
 choice = choice_A+choice_B+choice_E
-st.write(choice)
+
 
 df_choice=pd.DataFrame(columns=['Дата',"Банк","Значення"])
 df_con=pd.DataFrame(columns=['Дата',"Банк","Значення"])
 df_all=pd.DataFrame(columns=['Дата',"Значення"])
+
 if all_banks:
     df_all=df.groupby([df.dt]).value.sum().reset_index()
     df_all.columns = ['Дата',"Значення показника"]
+    fig_1 = px.line(df_all, x='Дата', y='Значення показника', height=500,width=1000)
+    st.plotly_chart(fig_1)
 
 if len(agg_choice)>0:
     df_con=df.groupby([df.dt,df.gr_bank]).value.sum().reset_index()
@@ -99,10 +102,11 @@ if len(choice) >0:
 
 
 df= pd.concat([df_choice,df_con],ignore_index=True)
+fig_2 = px.line(df, x='Дата', y='Значення', color='Банк', height=500,width=1000)
+st.plotly_chart(fig_2)
 
-
-st.write(df_all)
-st.write(df)
+#st.write(df_all)
+#st.write(df)
 
 # для завантаження таблиці у вигляді csv файлу
 
