@@ -79,23 +79,29 @@ else:
 choice = choice_A+choice_B+choice_E
 st.write(choice)
 
-
+df_choice=pd.DataFrame(columns=['Дата',"Банк","Значення"])
+df_con=pd.DataFrame(columns=['Дата',"Банк","Значення"])
+df_all=pd.DataFrame(columns=['Дата',"Значення"])
 if all_banks:
-    df=df.groupby([df.dt]).value.sum().reset_index()
-    df.columns = ['Дата',"Значення показника"]
+    df_all=df.groupby([df.dt]).value.sum().reset_index()
+    df_all.columns = ['Дата',"Значення показника"]
 
 if len(agg_choice)>0:
-    df=df.groupby([df.dt,df.gr_bank]).value.sum().reset_index()
-    df=df[df.gr_bank.isin(agg_choice)]
-    df.columns = ['Дата',"Банк","Значення"]
+    df_con=df.groupby([df.dt,df.gr_bank]).value.sum().reset_index()
+    df_con=df_con[df_con.gr_bank.isin(agg_choice)]
+    df_con.columns = ['Дата',"Банк","Значення"]
+
 
 if len(choice) >0:
-    df=df[df.fullname.isin(choice)]
-    df=df.groupby([df.dt,df.fullname]).value.sum().reset_index()
-    df.columns = ['Дата',"Банк","Значення"]
+    df_choice=df[df.fullname.isin(choice)]
+    df_choice=df_choice.groupby([df.dt,df.fullname]).value.sum().reset_index()
+    df_choice.columns = ['Дата',"Банк","Значення"]
 
 
+df= pd.concat([df_choice,df_con],ignore_index=True)
 
+
+st.write(df_all)
 st.write(df)
 
 # для завантаження таблиці у вигляді csv файлу
