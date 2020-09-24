@@ -13,7 +13,8 @@ import base64
 
 st.title("Показники фінансової діяльності банків України")
 st.sidebar.title("Фільтр по банкам України")
-st.markdown("Здесь что-то можно написать")
+st.markdown("Дані фінансової звітності/згруповані балансові залишки банків України.")
+st.markdown("Дані доступні з 01.02.2018 та формуються за станом на 01 число кожного місяця, млн грн")
 st.sidebar.markdown("щось написати")
 
 # обов'язково для даних,які будуть знову використовуватися в коді
@@ -24,7 +25,7 @@ def get_bank_data():
 name_pair=get_bank_data()
 
 # агреговані показники по всім банкам України
-st.sidebar.checkbox("Всі банки України", False)
+all_banks = st.sidebar.checkbox("Всі банки України", True)
 
 
 # обираємо банки за категорією "Всі банки з державною часткою"
@@ -73,17 +74,38 @@ def get_data(mfo,id_api):
     r = requests.get(url)
     source=r.json()
     return source
-if len(choice)>0:
-    da=[]
-    for i in mfos:
-        da+=get_data(i,id_api=id_api)
-    df=pd.DataFrame(da)
+def get_data_all(id_api):
+    BASE_URL = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/banksfinrep?id_api={id_api}&start=20180101&period=m&json'
+    url = BASE_URL.format(id_api=id_api)
+    r = requests.get(url)
+    source=r.json()
+    return source
+
+if all_banks:
+    source=get_data_all(id_api)
+    df=pd.DataFrame(source)
     df['dt']=pd.to_datetime(df.dt)
-    df=df.groupby([df.dt,df.mfo,df.fullname]).value.sum().reset_index()
-    df.columns = ['Дата',"МФО","Назва","Значення"]
-    fig_1 = px.line(df, x='Дата', y='Значення', color='Назва', height=500,width=1000)
+    df=df.groupby([df.dt]).value.sum().reset_index()
+    df.columns = ['Дата',"Значення"]
+    fig_1 = px.line(df, x='Дата', y='Значення', height=500,width=1000)
     st.plotly_chart(fig_1)
     st.write(df)
+else:
+    if len(choice)>0:
+        da=[]
+        for i in mfos:
+            da+=get_data(i,id_api=id_api)
+        df=pd.DataFrame(da)
+        df['dt']=pd.to_datetime(df.dt)
+        df=df.groupby([df.dt,df.mfo,df.fullname]).value.sum().reset_index()
+        df.columns = ['Дата',"МФО","Назва","Значення"]
+        fig_1 = px.line(df, x='Дата', y='Значення', color='Назва', height=500,width=1000)
+        st.plotly_chart(fig_1)
+        st.write(df)
+
+#print('Оберіть банк чи групу банків')
+
+# для завантаження таблиці у вигляді csv файлу
 
 def get_table_download_link(df):
     """Generates a link allowing the data in a given panda dataframe to be downloaded
@@ -92,6 +114,9 @@ def get_table_download_link(df):
     """
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-    href = f'<a href="data:file/csv;base64,{b64}">Завантажити таблицю</a>'
+    href = f'<a href="data:file/csv;base64,{b64}">Завантажити таблицю (.csv)</a>'
     return href
-st.markdown(get_table_download_link(df), unsafe_allow_html=True)
+try:
+    st.markdown(get_table_download_link(df), unsafe_allow_html=True)
+except:
+    st.write('Оберіть банк чи групу банків')
