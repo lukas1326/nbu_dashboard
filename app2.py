@@ -33,7 +33,7 @@ id_tuple = [('Активи','BS1_AssetsTotal'),("Зобов'язання",'BS1_L
 ('Капітал','BS1_CapitalTotal'),('Доходи і витрати - Всього доходів','BS1_IncomeTotal'),
 ('Доходи і витрати - Всього витрат','BS1_ExpenTotal'),('Доходи і витрати - Прибуток/(збиток) до оподаткування','BS1_ProfitLossBeforTax'),
 ('Доходи і витрати - Прибуток/(збиток) після оподаткування','BS1_ProfitLossAfterTax'),
-('Відрахування до резервів','BS1_AllocProv'),('Custom','BS1_ProfitLossBeforTax_PLUS_BS1_AllocProv')]
+('Відрахування до резервів','BS1_AllocProv'),('Прибуток/(збиток) до оподаткування без впливу резервів','BS1_ProfitLossBeforTax_PLUS_BS1_AllocProv')]
 
 id_label = [i[0] for i in id_tuple]
 id_choice = st.radio('Оберіть показник діяльності банку:',id_label)
@@ -92,7 +92,8 @@ df_all=pd.DataFrame(columns=['Дата',"Значення"])
 if all_banks:
     df_all=df.groupby([df.dt]).value.sum().reset_index()
     df_all.columns = ['Дата',"Значення показника"]
-    fig_1 = px.line(df_all, x='Дата', y='Значення показника', height=500,width=1000)
+    fig_1 = px.line(df_all, x='Дата', y='Значення показника', height=500,width=1000,
+        title='Графік агрегованих показників по всім банках України',template="plotly_white")
     st.plotly_chart(fig_1)
     st.markdown(get_table_download_link(df_all), unsafe_allow_html=True)
 
@@ -153,7 +154,8 @@ if len(agg_choice)>0:
 
 df_banks= pd.concat([df_choice,df_con],ignore_index=True)
 try:
-    fig_2 = px.line(df_banks, x='Дата', y='Значення', color='Банк', height=500,width=1000)
+    fig_2 = px.line(df_banks, x='Дата', y='Значення', color='Банк', height=500,width=1000,template="plotly_white",
+    title='Графік показників банків чи груп банків')
     st.plotly_chart(fig_2)
 except:
     st.write('Заберіть позначку "Усі банки України" та оберіть банк чи групу банків')
