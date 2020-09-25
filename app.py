@@ -33,7 +33,8 @@ id_tuple = [('Активи','BS1_AssetsTotal'),("Зобов'язання",'BS1_L
 ('Капітал','BS1_CapitalTotal'),('Доходи і витрати - Всього доходів','BS1_IncomeTotal'),
 ('Доходи і витрати - Всього витрат','BS1_ExpenTotal'),('Доходи і витрати - Прибуток/(збиток) до оподаткування','BS1_ProfitLossBeforTax'),
 ('Доходи і витрати - Прибуток/(збиток) після оподаткування','BS1_ProfitLossAfterTax'),
-('Відрахування до резервів','BS1_AllocProv'),('Прибуток/(збиток) до оподаткування без впливу резервів','BS1_ProfitLossBeforTax_PLUS_BS1_AllocProv')]
+('Відрахування до резервів','BS1_AllocProv'),('Прибуток/(збиток) до оподаткування без впливу резервів','BS1_ProfitLossBeforTax_PLUS_BS1_AllocProv'),
+('Чистий процентний дохід/(Чисті процентні витрати)','BS1_NetInterIncomeCosts'),('Чистий комісійний дохід/(Чисті комісійні витрати)','BS1_NetCommIncomeCosts')]
 
 id_label = [i[0] for i in id_tuple]
 id_choice = st.radio('Оберіть показник діяльності банку:',id_label)
