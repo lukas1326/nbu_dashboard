@@ -117,7 +117,7 @@ else:
 
 st.sidebar.subheader("Банки іноземних банківських груп")
 if st.sidebar.checkbox("Усі банки іноземних банківських груп", False):
-        hoice_B = list(name_list_B)
+        choice_B = name_list_B
 else:
     choice_B = st.sidebar.multiselect('Вибрати банк чи де-кілька банків', name_list_B)
 
